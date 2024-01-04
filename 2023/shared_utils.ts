@@ -94,6 +94,32 @@ export function pairs<T>(items: readonly T[]): [T, T][] {
   return zip(items, items.slice(1));
 }
 
+// Equality / Inequality
+
+export function equal<T>(a: T, b: T): boolean {
+  return a === b;
+}
+
+export function listEqual<T>(listA: readonly T[], listB: readonly T[], equalFn: (a: T, b: T) => boolean = equal): boolean {
+  return equal(listA.length, listB.length) && zip(listA, listB).every(([a, b]) => equalFn(a, b));
+}
+
+export function compare<T>(a: T, b: T): number {
+  if (a < b) return -1;
+  if (a > b) return +1;
+
+  return 0;
+}
+
+export function listCompare<T>(listA: readonly T[], listB: readonly T[], compareFn: (a: T, b: T) => number = compare): number {
+  for (const [a, b] of zip(listA, listB)) {
+    const comparison = compareFn(a, b);
+    if (comparison !== 0) return comparison;
+  }
+
+  return compare(listA.length, listB.length);
+}
+
 // Misc
 
 export function deepLog(item: unknown): void {
